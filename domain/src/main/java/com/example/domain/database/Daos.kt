@@ -13,7 +13,7 @@ interface CitiesDao {
     fun searchCityByName(name: String):List<City>
 
     @Query("SELECT * FROM city WHERE City.id IN (:ids)")
-    fun retrieveCitiesByIds(ids: List<Long>):List<City>
+    fun importCitiesByIds(ids: List<Long>):List<City>
 }
 
 @Dao
