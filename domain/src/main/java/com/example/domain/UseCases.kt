@@ -51,3 +51,8 @@ class ImportFavouriteCityIdsUseCase(
     }
 }
 
+class ImportForecastUseCase(
+    private val repository: ForecastRepository= forecastRepository
+){
+ operator fun invoke(cityId:Long)=repository.retrieveThreeDaysForecast(cityId.toString())
+}
