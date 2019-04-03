@@ -20,7 +20,7 @@ data class City(
 data class Coordinates(
     @field:SerializedName("lat") val latitude: Double?,
     @field:SerializedName("lon") val longitude: Double?
-)
+):Serializable
 
 data class ForecastsResponse(
     @field:SerializedName("city") val city: City?,
