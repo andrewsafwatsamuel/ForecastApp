@@ -16,9 +16,9 @@ import com.example.forecastapp.R
 import com.example.forecastapp.features.forecast.ForecastActivity
 import java.io.Serializable
 
-//const val ACTION_OPEN_FORECAST_SCREEN = "com.example.forecastapp.subFeatures.ACTION_OPEN_FORECAST_SCREEN"
+const val ACTION_OPEN_FORECAST_SCREEN = "com.example.forecastapp.subFeatures.ACTION_OPEN_FORECAST_SCREEN"
 
-//const val EXTRA_CITY = "com.example.forecastapp.subFeatures.SELECTED_CITY"
+const val EXTRA_CITY = "com.example.forecastapp.subFeatures.SELECTED_CITY"
 
 class CitiesViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     val forecastButton by lazy { view.findViewById<Button>(R.id.show_forecast_button) }
@@ -26,10 +26,10 @@ class CitiesViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(city: City) {
         cityTextView.text = city.name ?: ""
         forecastButton.setOnClickListener {
-            Toast.makeText(view.context,city.name ?: "",Toast.LENGTH_SHORT).show()
-//            Intent( ACTION_OPEN_FORECAST_SCREEN )
-//                .putExtra(EXTRA_CITY, city as Serializable)
-//                .also { view.context.sendBroadcast(it) }
+            Toast.makeText(view.context, city.name ?: "", Toast.LENGTH_SHORT).show()
+            Intent(ACTION_OPEN_FORECAST_SCREEN)
+                .putExtra(EXTRA_CITY, city as Serializable)
+                .also { view.context.sendBroadcast(it) }
         }
     }
 }

@@ -1,4 +1,4 @@
-package com.example.forecastapp.features.search
+package com.example.forecastapp.features.home.search
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
@@ -9,9 +9,12 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
+import java.io.Serializable
 
 
 class HomeViewModel(
+    val showCityForecast:PublishSubject<Serializable> = PublishSubject.create(),
     private val disposables: CompositeDisposable = CompositeDisposable(),
     val searchProgress: MutableLiveData<Boolean> = false.toMutableLiveData(),
     val searchResults: MutableLiveData<List<City>> = ArrayList<City>().toMutableLiveData(),
