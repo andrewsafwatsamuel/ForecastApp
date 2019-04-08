@@ -26,7 +26,7 @@ class CitiesRepositoryImplementer : CitiesRepository {
         citiesDatabase.favouriteCityIdDao().insert(favoriteCityId)
 
     override fun removeFromFavourites(favoriteCityId: FavoriteCityId) =
-        citiesDatabase.favouriteCityIdDao().insert(favoriteCityId)
+        citiesDatabase.favouriteCityIdDao().remove(favoriteCityId)
 }
 
 interface ForecastRepository {
