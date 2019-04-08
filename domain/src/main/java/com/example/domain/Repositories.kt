@@ -33,7 +33,7 @@ interface ForecastRepository {
     fun retrieveThreeDaysForecast(id: String): Single<ForecastsResponse>
 }
 
-val forecastRepository by lazy { ForecastRepositoryImplementer() }
+val forecastRepositoryImplementer by lazy { ForecastRepositoryImplementer() }
 
 class ForecastRepositoryImplementer : ForecastRepository {
     override fun retrieveThreeDaysForecast(id: String) = forecastApis.retrieveForecastForThreeDay(id)

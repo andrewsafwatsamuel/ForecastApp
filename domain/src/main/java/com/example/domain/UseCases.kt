@@ -2,6 +2,7 @@ package com.example.domain
 
 import android.arch.lifecycle.MutableLiveData
 import com.example.entity.City
+import com.example.entity.FavoriteCityId
 import java.lang.Exception
 
 class SearchCityByNameUseCase(
@@ -51,8 +52,41 @@ class ImportFavouriteCityIdsUseCase(
     }
 }
 
+
 class ImportForecastUseCase(
-    private val repository: ForecastRepository= forecastRepository
-){
- operator fun invoke(cityId:Long)=repository.retrieveThreeDaysForecast(cityId.toString())
+    private val repository: ForecastRepository = forecastRepositoryImplementer
+) {
+    operator fun invoke(cityId: Long) = repository.retrieveThreeDaysForecast(cityId.toString())
+
 }
+
+const val ADD_TO_FAVOURITES = "add to favourites"
+const val REMOVE_FROM_FAVOURITES = "remove from favourites"
+
+class CheckFavouriteUseCase(
+    private val favouriteString: MutableLiveData<String>,
+    private val repository: CitiesRepository = citiesRepositoryImplementer
+) {
+    operator fun invoke(cityId: Long) {
+        repository.importFavouriteCityIds()
+            .asSequence()
+            .map { it.id }
+            .contains(cityId)
+            .also { favouriteString.postValue(if (it) REMOVE_FROM_FAVOURITES else ADD_TO_FAVOURITES) }
+    }
+}
+
+
+fun addToFavourites(cityId: Long, repository: CitiesRepository = citiesRepositoryImplementer) {
+    FavoriteCityId(cityId)
+        .let { repository.insertToFavourites(it) }
+}
+
+fun removeFromFavourites(
+    cityId: Long,
+    repository: CitiesRepository = citiesRepositoryImplementer
+) {
+    FavoriteCityId(cityId)
+        .let { repository.removeFromFavourites(it) }
+}
+
