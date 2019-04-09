@@ -12,6 +12,7 @@ import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 
 class ForecastViewModel(
+    val loadingSubject: BehaviorSubject<Boolean> = BehaviorSubject.create(),
     val responseSubject: BehaviorSubject<ForecastsResponse> = BehaviorSubject.create(),
     val disposables: CompositeDisposable = CompositeDisposable(),
     val favouriteString: MutableLiveData<String> = MutableLiveData(),
@@ -19,16 +20,15 @@ class ForecastViewModel(
     val checkFavouriteUseCase: CheckFavouriteUseCase = CheckFavouriteUseCase(favouriteString)
 ) : ViewModel() {
 
-    //how can I test That
     fun importForecasts(cityId: Long) {
         importForecastUseCase(cityId)
+            .doOnSubscribe { loadingSubject.onNext(true) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess { responseSubject.onNext(it) }
+            .doAfterSuccess { loadingSubject.onNext(false) }
             .subscribe({}, Throwable::printStackTrace)
             .also { disposables.addAll() }
-
-
     }
 
 

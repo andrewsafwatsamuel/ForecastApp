@@ -77,16 +77,25 @@ class CheckFavouriteUseCase(
 }
 
 
-fun addToFavourites(cityId: Long, repository: CitiesRepository = citiesRepositoryImplementer) {
+fun addToFavourites(cityId: Long,
+                    favouriteString: MutableLiveData<String>,
+                    repository: CitiesRepository = citiesRepositoryImplementer,
+                    checkFavouriteUseCase: CheckFavouriteUseCase= CheckFavouriteUseCase(favouriteString)
+) {
     FavoriteCityId(cityId)
-        .let { repository.insertToFavourites(it) }
+        .also { repository.insertToFavourites(it) }
+        .also { checkFavouriteUseCase(it.id) }
 }
 
 fun removeFromFavourites(
     cityId: Long,
-    repository: CitiesRepository = citiesRepositoryImplementer
+    favouriteString: MutableLiveData<String>,
+    repository: CitiesRepository = citiesRepositoryImplementer,
+    checkFavouriteUseCase: CheckFavouriteUseCase= CheckFavouriteUseCase(favouriteString)
 ) {
     FavoriteCityId(cityId)
-        .let { repository.removeFromFavourites(it) }
+        .also { repository.removeFromFavourites(it) }
+        .also { checkFavouriteUseCase(it.id) }
+
 }
 

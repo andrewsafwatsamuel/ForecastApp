@@ -3,7 +3,6 @@ package com.example.forecastapp.features.forecast
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -37,7 +36,7 @@ class ForecastActivity : AppCompatActivity(), ForecastView {
             .also { favouriteButtonOnClick(it) }
     }
 
-    fun favouriteButtonOnClick(presenter: ForecastPresenter) {
+    private fun favouriteButtonOnClick(presenter: ForecastPresenter) {
         fovurites_switch_button.setOnClickListener { invokeFavouritesAction(presenter) }
     }
 
@@ -54,15 +53,11 @@ class ForecastActivity : AppCompatActivity(), ForecastView {
     }
 
     override fun startLoading() {
-        presenter.loadingLiveData.observe(this, Observer {
-            if (it!!) forecasts_progress_bar.visibility = View.VISIBLE else View.GONE
-
-        })
-        favourites_button_progress_bar.visibility = View.VISIBLE
+        forecasts_progress_bar.visibility = View.VISIBLE
     }
 
     override fun stopLoading() {
-        favourites_button_progress_bar.visibility = View.GONE
+        forecasts_progress_bar.visibility = View.GONE
     }
 
     override fun drawForecastList(forecasts: List<Forecast>) {
