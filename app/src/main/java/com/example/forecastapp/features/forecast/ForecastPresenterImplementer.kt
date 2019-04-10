@@ -1,5 +1,6 @@
 package com.example.forecastapp.features.forecast
 
+import android.arch.lifecycle.OnLifecycleEvent
 import com.example.entity.City
 import com.example.domain.addToFavourites
 import com.example.domain.removeFromFavourites

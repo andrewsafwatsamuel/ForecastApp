@@ -27,6 +27,7 @@ class ForecastViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSuccess { responseSubject.onNext(it) }
             .doAfterSuccess { loadingSubject.onNext(false) }
+            .doOnError { loadingSubject.onNext(false) }
             .subscribe({}, Throwable::printStackTrace)
             .also { disposables.addAll() }
     }
