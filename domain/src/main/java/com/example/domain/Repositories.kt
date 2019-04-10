@@ -29,6 +29,26 @@ class CitiesRepositoryImplementer : CitiesRepository {
         citiesDatabase.favouriteCityIdDao().remove(favoriteCityId)
 }
 
+open class FakeCitiesRepository:CitiesRepository {
+    override fun searchCityByName(name: String): List<City> {
+        return ArrayList()
+    }
+
+    override fun importFavouriteCitiesById(ids: List<Long>): List<City> {
+        return ArrayList()
+    }
+
+    override fun importFavouriteCityIds(): List<FavoriteCityId> {
+        return ArrayList()
+    }
+
+    override fun insertToFavourites(favoriteCityId: FavoriteCityId) {
+    }
+
+    override fun removeFromFavourites(favoriteCityId: FavoriteCityId) {
+    }
+}
+
 interface ForecastRepository {
     fun retrieveThreeDaysForecast(id: String): Single<ForecastsResponse>
 }

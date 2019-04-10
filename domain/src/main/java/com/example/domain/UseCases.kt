@@ -60,11 +60,9 @@ class ImportForecastUseCase(
 
 }
 
-const val ADD_TO_FAVOURITES = "add to favourites"
-const val REMOVE_FROM_FAVOURITES = "remove from favourites"
 
 class CheckFavouriteUseCase(
-    private val favouriteString: MutableLiveData<String>,
+    private val result: MutableLiveData<Boolean>,
     private val repository: CitiesRepository = citiesRepositoryImplementer
 ) {
     operator fun invoke(cityId: Long) {
@@ -72,30 +70,26 @@ class CheckFavouriteUseCase(
             .asSequence()
             .map { it.id }
             .contains(cityId)
-            .also { favouriteString.postValue(if (it) REMOVE_FROM_FAVOURITES else ADD_TO_FAVOURITES) }
+            .also { result.postValue(it) }
     }
 }
 
 
-fun addToFavourites(cityId: Long,
-                    favouriteString: MutableLiveData<String>,
-                    repository: CitiesRepository = citiesRepositoryImplementer,
-                    checkFavouriteUseCase: CheckFavouriteUseCase= CheckFavouriteUseCase(favouriteString)
+class FavouritesController(
+    private val cityId: Long,
+    result: MutableLiveData<Boolean>,
+    private val repository: CitiesRepository = citiesRepositoryImplementer,
+    private val checkFavouriteUseCase: CheckFavouriteUseCase = CheckFavouriteUseCase(result)
 ) {
-    FavoriteCityId(cityId)
-        .also { repository.insertToFavourites(it) }
-        .also { checkFavouriteUseCase(it.id) }
+    fun addToFavourites() {
+        FavoriteCityId(cityId)
+            .also { repository.insertToFavourites(it) }
+            .also { checkFavouriteUseCase(it.id) }
+    }
+
+    fun removeFromFavourites() {
+        FavoriteCityId(cityId)
+            .also { repository.removeFromFavourites(it) }
+            .also { checkFavouriteUseCase(it.id) }
+    }
 }
-
-fun removeFromFavourites(
-    cityId: Long,
-    favouriteString: MutableLiveData<String>,
-    repository: CitiesRepository = citiesRepositoryImplementer,
-    checkFavouriteUseCase: CheckFavouriteUseCase= CheckFavouriteUseCase(favouriteString)
-) {
-    FavoriteCityId(cityId)
-        .also { repository.removeFromFavourites(it) }
-        .also { checkFavouriteUseCase(it.id) }
-
-}
-

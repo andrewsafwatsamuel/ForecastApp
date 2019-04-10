@@ -13,7 +13,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.entity.City
 import com.example.forecastapp.R
-import com.example.forecastapp.features.forecast.ForecastActivity
 import java.io.Serializable
 
 const val ACTION_OPEN_FORECAST_SCREEN = "com.example.forecastapp.subFeatures.ACTION_OPEN_FORECAST_SCREEN"
