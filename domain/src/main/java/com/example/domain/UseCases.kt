@@ -76,18 +76,17 @@ class CheckFavouriteUseCase(
 
 
 class FavouritesController(
-    private val cityId: Long,
     result: MutableLiveData<Boolean>,
     private val repository: CitiesRepository = citiesRepositoryImplementer,
     private val checkFavouriteUseCase: CheckFavouriteUseCase = CheckFavouriteUseCase(result)
 ) {
-    fun addToFavourites() {
+    fun addToFavourites(cityId: Long) {
         FavoriteCityId(cityId)
             .also { repository.insertToFavourites(it) }
             .also { checkFavouriteUseCase(it.id) }
     }
 
-    fun removeFromFavourites() {
+    fun removeFromFavourites(cityId: Long) {
         FavoriteCityId(cityId)
             .also { repository.removeFromFavourites(it) }
             .also { checkFavouriteUseCase(it.id) }

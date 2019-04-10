@@ -27,13 +27,12 @@ class FavouritesControllerTest {
 
         with(
             FavouritesController(
-                cityID,
                 result,
                 addRemoveTestRepository,
                 CheckFavouriteUseCase(result, repositoryMock)
             )
         ) {
-            addToFavourites()
+            addToFavourites(cityID)
         }
         assertTrue(result.value!!)
     }
@@ -51,13 +50,12 @@ class FavouritesControllerTest {
 
         with(
             FavouritesController(
-                cityID,
                 result,
                 addRemoveTestRepository,
                 CheckFavouriteUseCase(result, repositoryMock)
             )
         ) {
-            removeFromFavourites()
+            removeFromFavourites(cityID)
         }
         assertTrue(result.value==false)
     }
