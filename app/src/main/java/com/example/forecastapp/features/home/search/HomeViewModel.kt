@@ -14,7 +14,7 @@ import java.io.Serializable
 
 
 class HomeViewModel(
-    val showCityForecast:PublishSubject<Serializable> = PublishSubject.create(),
+    val showCityForecast: PublishSubject<Serializable> = PublishSubject.create(),
     private val disposables: CompositeDisposable = CompositeDisposable(),
     val searchProgress: MutableLiveData<Boolean> = false.toMutableLiveData(),
     val searchResults: MutableLiveData<List<City>> = ArrayList<City>().toMutableLiveData(),
@@ -23,7 +23,8 @@ class HomeViewModel(
 
 
     fun onSearchButtonClicked(cityName: String?) {
-        Observable.fromCallable { searchCityByName(cityName) }
+        Observable
+            .fromCallable { searchCityByName(cityName) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
@@ -33,6 +34,6 @@ class HomeViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        disposables.clear()
+        disposables.dispose()
     }
 }

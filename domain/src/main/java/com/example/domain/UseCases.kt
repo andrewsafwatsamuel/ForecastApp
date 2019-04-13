@@ -2,6 +2,7 @@ package com.example.domain
 
 import android.arch.lifecycle.MutableLiveData
 import com.example.entity.City
+import com.example.entity.FavoriteCityId
 import java.lang.Exception
 
 class SearchCityByNameUseCase(
@@ -51,3 +52,43 @@ class ImportFavouriteCityIdsUseCase(
     }
 }
 
+
+class ImportForecastUseCase(
+    private val repository: ForecastRepository = forecastRepositoryImplementer
+) {
+    operator fun invoke(cityId: Long) = repository.retrieveThreeDaysForecast(cityId.toString())
+
+}
+
+
+class CheckFavouriteUseCase(
+    private val result: MutableLiveData<Boolean>,
+    private val repository: CitiesRepository = citiesRepositoryImplementer
+) {
+    operator fun invoke(cityId: Long) {
+        repository.importFavouriteCityIds()
+            .asSequence()
+            .map { it.id }
+            .contains(cityId)
+            .also { result.postValue(it) }
+    }
+}
+
+
+class FavouritesController(
+    result: MutableLiveData<Boolean>,
+    private val repository: CitiesRepository = citiesRepositoryImplementer,
+    private val checkFavouriteUseCase: CheckFavouriteUseCase = CheckFavouriteUseCase(result)
+) {
+    fun addToFavourites(cityId: Long) {
+        FavoriteCityId(cityId)
+            .also { repository.insertToFavourites(it) }
+            .also { checkFavouriteUseCase(it.id) }
+    }
+
+    fun removeFromFavourites(cityId: Long) {
+        FavoriteCityId(cityId)
+            .also { repository.removeFromFavourites(it) }
+            .also { checkFavouriteUseCase(it.id) }
+    }
+}

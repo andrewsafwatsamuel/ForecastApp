@@ -80,6 +80,6 @@ class HomeFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         activity!!.unregisterReceiver(resultsReceiver)
-        disposables.clear()
+        disposables.dispose()
     }
 }

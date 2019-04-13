@@ -4,4 +4,9 @@
     <string name="input_search_keyword">search keyword</string>
     <string name="search">search</string>
     <string name="favourite_cities">favourite cities</string>
+    <string name="min">min</string>
+    <string name="max">max</string>
+    <string name="temperature_now">now</string>
+    <string name="humedity">humedity</string>
+    <string name="pressure">Pressure</string>
 </resources>
