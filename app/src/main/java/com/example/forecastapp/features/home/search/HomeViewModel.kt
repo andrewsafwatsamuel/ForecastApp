@@ -34,6 +34,6 @@ class HomeViewModel(
 
     override fun onCleared() {
         super.onCleared()
-        disposables.clear()
+        disposables.dispose()
     }
 }

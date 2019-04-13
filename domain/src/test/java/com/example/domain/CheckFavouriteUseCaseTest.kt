@@ -21,37 +21,37 @@ class CheckFavouriteUseCaseTest {
 
     //else sit the value of mutableLiveData to false
     @Test
-    fun `invoke when city id outside favourite ids then favouriteCheck value is ADD_TO_FAVOURITES`() {
+    fun `invoke when city id outside favourite ids then favouriteCheck value is false`() {
         val repositoryMock = mock<CitiesRepository> {
 
             on { importFavouriteCityIds() } doReturn listOf(
                 FavoriteCityId(1L), FavoriteCityId(2L), FavoriteCityId(3L)
             )
         }
-        val favouriteState = MutableLiveData<String>()
+        val favouriteState = MutableLiveData<Boolean>()
         val cityId = 5L
 
         with(CheckFavouriteUseCase(favouriteState,repositoryMock)) {
             invoke(cityId)
         }
-        assertTrue(favouriteState.value!!.equals(ADD_TO_FAVOURITES))
+        assertTrue(favouriteState.value==false)
     }
 
     //if the city in favourite sit the value of mutableLiveData to true
     @Test
-    fun `invoke when city id inside favourite ids then favouriteCheck value is REMOVE_FROM_FAVOURITES`() {
+    fun `invoke when city id inside favourite ids then favouriteCheck value is true`() {
         val repositoryMock = mock<CitiesRepository> {
 
             on { importFavouriteCityIds() } doReturn listOf(
                 FavoriteCityId(1L), FavoriteCityId(2L), FavoriteCityId(3L)
             )
         }
-        val favouriteState = MutableLiveData<String>()
+        val favouriteState = MutableLiveData<Boolean>()
         val cityId = 2L
 
         with(CheckFavouriteUseCase(favouriteState,repositoryMock)) {
             invoke(cityId)
         }
-        assertTrue(favouriteState.value!!.equals(REMOVE_FROM_FAVOURITES))
+        assertTrue(favouriteState.value==true)
     }
 }

@@ -9,38 +9,39 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.BehaviorSubject
 
 class ForecastViewModel(
-    val loadingSubject: BehaviorSubject<Boolean> = BehaviorSubject.create(),
-    val responseSubject: BehaviorSubject<ForecastsResponse> = BehaviorSubject.create(),
+    val loadingLiveData: MutableLiveData<Boolean> = MutableLiveData(),
+    val forecastLiveData: MutableLiveData<ForecastsResponse> = MutableLiveData(),
     val disposables: CompositeDisposable = CompositeDisposable(),
-    val favouriteString: MutableLiveData<String> = MutableLiveData(),
-    private val importForecastUseCase: ImportForecastUseCase = ImportForecastUseCase(),
-    val checkFavouriteUseCase: CheckFavouriteUseCase = CheckFavouriteUseCase(favouriteString)
+    val isFavourite: MutableLiveData<Boolean> = MutableLiveData(),
+    private val checkFavourites: CheckFavouriteUseCase = CheckFavouriteUseCase(isFavourite),
+    private val importForecastUseCase: ImportForecastUseCase = ImportForecastUseCase()
 ) : ViewModel() {
 
     fun importForecasts(cityId: Long) {
         importForecastUseCase(cityId)
-            .doOnSubscribe { loadingSubject.onNext(true) }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnSuccess { responseSubject.onNext(it) }
-            .doAfterSuccess { loadingSubject.onNext(false) }
-            .doOnError { loadingSubject.onNext(false) }
+            .doOnSubscribe { loadingLiveData.postValue(true) }
+            .doOnSuccess { setOnSuccess(it) }
+            .doOnError { loadingLiveData.postValue(false) }
             .subscribe({}, Throwable::printStackTrace)
             .also { disposables.addAll() }
     }
 
-
-    fun checkFavourites(cityId: Long) {
-        Single.create<Unit> { checkFavouriteUseCase(cityId) }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe()
-            .also { disposables.addAll() }
+    private fun setOnSuccess(forecastResponse: ForecastsResponse, loading: Boolean = false) {
+        loadingLiveData.postValue(loading)
+        forecastLiveData.postValue(forecastResponse)
     }
 
+    fun checkFavourite(cityId: Long) {
+        Single.create<Unit> { checkFavourites(cityId) }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({}, Throwable::printStackTrace)
+            .also { disposables.addAll() }
+    }
 
     override fun onCleared() {
         super.onCleared()
