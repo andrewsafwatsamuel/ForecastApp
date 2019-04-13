@@ -1,13 +1,12 @@
 package com.example.forecastapp.features.forecast
 
-import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
-import android.arch.lifecycle.OnLifecycleEvent
 import com.example.domain.FavouritesController
 import com.example.entity.City
 import com.example.entity.Forecast
+import com.example.entity.ForecastsResponse
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -26,20 +25,37 @@ class ForecastPresenterImplementer(
 
     override fun initializeCity(city: City) {
         this.city = city
-        forecastView.startLoading()
         forecastViewModel.checkFavourite(city.id)
         setFavouriteButtonText()
+        retrieveServerData()
+        handleLoadingIndicator()
+    }
+
+    private fun retrieveServerData() {
+        forecastViewModel
+            .also { it.importForecasts(city!!.id) }
+            .also { addDataToView(it.forecastLiveData) }
+    }
+
+    private fun handleLoadingIndicator() {
+        forecastViewModel.loadingLiveData.observe(lifecycleOwner, Observer {
+            if (it!!) forecastView.startLoading() else forecastView.stopLoading()
+        })
+    }
+
+    private fun addDataToView(forecastsLiveData: MutableLiveData<ForecastsResponse>) {
+        forecastsLiveData.observe(lifecycleOwner, Observer { forecastView.drawForcastList(it!!.forecasts!!) })
     }
 
     fun onFavouriteButtonClick() {
         forecastViewModel.isFavourite
             .also { if (it.value!!) removeCityFromFavorites() else addCityToFavoritesClicked() }
-            .also {setFavouriteButtonText()}
+            .also { setFavouriteButtonText() }
     }
 
-    private fun setFavouriteButtonText(){
+    private fun setFavouriteButtonText() {
         forecastViewModel.isFavourite.observe(lifecycleOwner, Observer {
-            if (it!!)forecastView.drawAsNotFavoriteCity()
+            if (it!!) forecastView.drawAsNotFavoriteCity()
             else forecastView.drawAsFavoriteCity()
         })
     }

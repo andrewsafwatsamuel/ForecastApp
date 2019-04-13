@@ -3,6 +3,7 @@ package com.example.forecastapp.features.forecast
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.example.entity.City
 import com.example.entity.Forecast
@@ -18,16 +19,16 @@ const val REMOVE_FROM_FAVOURITES = "remove from favourites"
 @ContentViewId(R.layout.activity_forecast)
 class ForecastActivity : AppCompatActivity(), ForecastView {
 
-    private val viewModel by lazy { ViewModelProviders.of(this)[ForecastViewModel::class.java] }
+    private val viewModel by lazy {
+        ViewModelProviders.of(this)[ForecastViewModel::class.java]
+    }
 
     private val presenter by lazy {
-        ForecastPresenterImplementer(this,this, viewModel)
-            .also { lifecycle.addObserver(it) }
+        ForecastPresenterImplementer(this, this, viewModel)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         presenter
             .also { initializeViews(it) }
     }
@@ -47,7 +48,9 @@ class ForecastActivity : AppCompatActivity(), ForecastView {
     override fun drawForcastList(forcasts: List<Forecast>) {
         ForecastsLiveData()
             .also { it.value = forcasts }
-            .also { ForecastRecyclerViewAdapter(this, it) }
+            .let { ForecastRecyclerViewAdapter(this, it) }
+            .also { forecasts_recycler_view.layoutManager = LinearLayoutManager(this) }
+            .also { forecasts_recycler_view.adapter = it }
     }
 
     override fun drawAsFavoriteCity() {
