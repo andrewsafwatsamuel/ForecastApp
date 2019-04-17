@@ -9,6 +9,7 @@ import android.content.IntentFilter
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -18,17 +19,30 @@ import android.widget.Button
 import com.example.forecastapp.R
 import com.example.forecastapp.core.ContentViewId
 import com.example.forecastapp.features.forecast.ForecastActivity
-import com.example.forecastapp.subFeatures.ACTION_OPEN_FORECAST_SCREEN
-import com.example.forecastapp.subFeatures.CitiesRecyclerViewAdapter
-import com.example.forecastapp.subFeatures.EXTRA_CITY
+import com.example.forecastapp.subFeatures.cities_list.ACTION_OPEN_FORECAST_SCREEN
+import com.example.forecastapp.subFeatures.cities_list.CitiesFragment
+import com.example.forecastapp.subFeatures.cities_list.CitiesRecyclerViewAdapter
+import com.example.forecastapp.subFeatures.cities_list.EXTRA_CITY
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_home.*
 import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
+val citiesFragment = CitiesFragment()
+
 @ContentViewId(R.layout.activity_home)
-class HomeActivity : AppCompatActivity()
+class HomeActivity : AppCompatActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        supportFragmentManager.beginTransaction()
+            .add(R.id.cities_frame_layout, citiesFragment)
+            .commit()
+    }
+
+}
 
 class HomeFragment : Fragment() {
 
@@ -55,9 +69,10 @@ class HomeFragment : Fragment() {
         viewModel.searchProgress.observe(this, Observer {
             search_progress_bar.visibility = if (it!!) View.VISIBLE else View.GONE
         })
-        view.findViewById<RecyclerView>(R.id.results_recycler_view)
-            .also { it.layoutManager = LinearLayoutManager(context) }
-            ?.also { it.adapter = CitiesRecyclerViewAdapter(this, viewModel.searchResults) }
+
+        citiesFragment.publicRecyclerViewLiveData.observe(this, Observer {
+            addCitiesToList(it!!)
+        })
 
         viewModel.showCityForecast.debounce(500, TimeUnit.MILLISECONDS)
             .subscribeOn(AndroidSchedulers.mainThread())
@@ -75,6 +90,12 @@ class HomeFragment : Fragment() {
         Intent(activity, ForecastActivity::class.java)
             .putExtra(EXTRA_CITY, citySerializable)
             .also { startActivity(it) }
+    }
+
+    private fun addCitiesToList(recyclerView: RecyclerView){
+        recyclerView
+            .also { it.layoutManager = LinearLayoutManager(context) }
+            .also { it.adapter = CitiesRecyclerViewAdapter(this, viewModel.searchResults) }
     }
 
     override fun onDestroy() {

@@ -1,4 +1,4 @@
-package com.example.forecastapp.subFeatures
+package com.example.forecastapp.subFeatures.cities_list
 
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.MutableLiveData
@@ -15,9 +15,11 @@ import com.example.entity.City
 import com.example.forecastapp.R
 import java.io.Serializable
 
-const val ACTION_OPEN_FORECAST_SCREEN = "com.example.forecastapp.subFeatures.ACTION_OPEN_FORECAST_SCREEN"
+const val ACTION_OPEN_FORECAST_SCREEN = "com.example.forecastapp.subFeatures.cities_list.ACTION_OPEN_FORECAST_SCREEN"
 
 const val EXTRA_CITY = "com.example.forecastapp.subFeatures.SELECTED_CITY"
+
+typealias CitiesLiveData=MutableLiveData<List<City>>
 
 class CitiesViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     val forecastButton by lazy { view.findViewById<Button>(R.id.show_forecast_button) }
@@ -36,7 +38,7 @@ class CitiesViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
 class CitiesRecyclerViewAdapter(
     lifecycleOwner: LifecycleOwner,
-    private val citiesLiveData: MutableLiveData<List<City>>
+    private val citiesLiveData: CitiesLiveData
 ) : RecyclerView.Adapter<CitiesViewHolder>() {
 
 

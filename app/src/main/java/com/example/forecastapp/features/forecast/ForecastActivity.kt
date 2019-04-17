@@ -9,7 +9,7 @@ import com.example.entity.City
 import com.example.entity.Forecast
 import com.example.forecastapp.R
 import com.example.forecastapp.core.ContentViewId
-import com.example.forecastapp.subFeatures.EXTRA_CITY
+import com.example.forecastapp.subFeatures.cities_list.EXTRA_CITY
 import kotlinx.android.synthetic.main.activity_forecast.*
 
 
