@@ -19,6 +19,7 @@ import android.widget.Button
 import com.example.forecastapp.R
 import com.example.forecastapp.core.ContentViewId
 import com.example.forecastapp.features.forecast.ForecastActivity
+import com.example.forecastapp.features.home.favourite_cities.FavouriteCities
 import com.example.forecastapp.subFeatures.cities_list.ACTION_OPEN_FORECAST_SCREEN
 import com.example.forecastapp.subFeatures.cities_list.CitiesFragment
 import com.example.forecastapp.subFeatures.cities_list.CitiesRecyclerViewAdapter
@@ -30,6 +31,7 @@ import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
 val citiesFragment = CitiesFragment()
+const val EXTRA_FAVOURITE_IDS="com.example.forecastapp.features.home.search_EXTRA_FAVOURITE_IDS"
 
 @ContentViewId(R.layout.activity_home)
 class HomeActivity : AppCompatActivity() {
@@ -84,6 +86,9 @@ class HomeFragment : Fragment() {
             viewModel.onSearchButtonClicked(cityName)
         }
         activity!!.registerReceiver(resultsReceiver, IntentFilter(ACTION_OPEN_FORECAST_SCREEN))
+
+        view.findViewById<Button>(R.id.favourite_cities_button)
+            .setOnClickListener { retrieveFavouriteIds() }
     }
 
     private fun startForecastScreen(citySerializable: Serializable) {
@@ -98,7 +103,21 @@ class HomeFragment : Fragment() {
             .also { it.adapter = CitiesRecyclerViewAdapter(this, viewModel.searchResults) }
     }
 
-    override fun onDestroy() {
+    private fun retrieveFavouriteIds(){
+        viewModel
+            .also { it.onFavouritesButtonClicked(context!!) }
+            .let { it.idsResult }
+            .observe(this, Observer { if (it!!.isNotEmpty()) startFavouritesScreen(it)
+            println(it)})
+    }
+
+    private fun startFavouritesScreen(ids: List<Long>){
+        Intent(context, FavouriteCities::class.java)
+            .also { it.putExtra(EXTRA_FAVOURITE_IDS, ids as Serializable) }
+            .also { startActivity(it) }
+    }
+
+    override fun onDestroy(){
         super.onDestroy()
         activity!!.unregisterReceiver(resultsReceiver)
         disposables.dispose()

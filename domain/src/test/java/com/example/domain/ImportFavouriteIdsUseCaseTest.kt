@@ -17,7 +17,7 @@ import kotlin.Exception
 * if favouriteIds list is empty throw exception
 * when all is ok retrieve Ids list
 */
-class ImportFavouriteCityIdsUseCaseTest {
+class ImportFavouriteIdsUseCaseTest {
     @get:Rule
     val rule: TestRule = InstantTaskExecutorRule()
 
@@ -32,7 +32,7 @@ class ImportFavouriteCityIdsUseCaseTest {
             } doReturn mockFavouriteCityIds
         }
 
-        with(ImportFavouriteCityIdsUseCase(isRetrieving, result, repositoryMock)) {
+        with(ImportFavouriteIdsUseCase(isRetrieving, result, repositoryMock)) {
             invoke()
         }
 
@@ -50,7 +50,7 @@ class ImportFavouriteCityIdsUseCaseTest {
             } doReturn ArrayList<FavoriteCityId>()
         }
 
-        with(ImportFavouriteCityIdsUseCase(isRetrieving, result, repositoryMock)) {
+        with(ImportFavouriteIdsUseCase(isRetrieving, result, repositoryMock)) {
             invoke()
         }
     }
@@ -66,7 +66,7 @@ class ImportFavouriteCityIdsUseCaseTest {
             } doReturn mockFavouriteCityIds
         }
 
-        with(ImportFavouriteCityIdsUseCase(isRetrieving, result, repositoryMock)) {
+        with(ImportFavouriteIdsUseCase(isRetrieving, result, repositoryMock)) {
             isRetrieving.postValue(true)
             invoke()
         }

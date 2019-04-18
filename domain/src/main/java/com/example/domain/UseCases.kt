@@ -35,7 +35,7 @@ class ImportFavouriteCitiesByIdUseCase(
     }
 }
 
-class ImportFavouriteCityIdsUseCase(
+class ImportFavouriteIdsUseCase(
     private val isRetrieving: MutableLiveData<Boolean>,
     private val result: MutableLiveData<List<Long>>,
     private val repository: CitiesRepository = citiesRepositoryImplementer
