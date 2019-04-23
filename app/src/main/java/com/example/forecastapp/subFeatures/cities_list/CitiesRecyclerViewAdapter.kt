@@ -19,7 +19,7 @@ const val ACTION_OPEN_FORECAST_SCREEN = "com.example.forecastapp.subFeatures.cit
 
 const val EXTRA_CITY = "com.example.forecastapp.subFeatures.SELECTED_CITY"
 
-typealias CitiesLiveData=MutableLiveData<List<City>>
+typealias CitiesLiveData = MutableLiveData<List<City>>
 
 class CitiesViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     val forecastButton by lazy { view.findViewById<Button>(R.id.show_forecast_button) }

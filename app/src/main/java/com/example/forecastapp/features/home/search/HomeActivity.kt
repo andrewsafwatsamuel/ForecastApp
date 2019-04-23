@@ -1,5 +1,7 @@
 package com.example.forecastapp.features.home.search
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
 import android.content.BroadcastReceiver
@@ -31,7 +33,7 @@ import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
 val citiesFragment = CitiesFragment()
-const val EXTRA_FAVOURITE_IDS="com.example.forecastapp.features.home.search_EXTRA_FAVOURITE_IDS"
+const val EXTRA_FAVOURITE_IDS = "com.example.forecastapp.features.home.search_EXTRA_FAVOURITE_IDS"
 
 @ContentViewId(R.layout.activity_home)
 class HomeActivity : AppCompatActivity() {
@@ -48,13 +50,10 @@ class HomeActivity : AppCompatActivity() {
 
 class HomeFragment : Fragment() {
 
-    private val viewModel by lazy { ViewModelProviders.of(this).get(HomeViewModel::class.java) }
-
-    private val resultsReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            viewModel.showCityForecast.onNext(intent!!.getSerializableExtra(EXTRA_CITY))
-        }
+    private val viewModel by lazy {
+        ViewModelProviders.of(this).get(HomeViewModel::class.java)
     }
+
     private val disposables = CompositeDisposable()
 
 
@@ -73,53 +72,30 @@ class HomeFragment : Fragment() {
         })
 
         citiesFragment.publicRecyclerViewLiveData.observe(this, Observer {
-            addCitiesToList(it!!)
+            drawCitiesList(it!!)
         })
 
-        viewModel.showCityForecast.debounce(500, TimeUnit.MILLISECONDS)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe { startForecastScreen(it) }
-            .also { disposables.addAll() }
-
         view.findViewById<Button>(R.id.search_button).setOnClickListener {
-            val cityName = search_edit_text.text.toString()
-            viewModel.onSearchButtonClicked(cityName)
+            viewModel.onSearchButtonClicked(search_edit_text.text.toString())
         }
-        activity!!.registerReceiver(resultsReceiver, IntentFilter(ACTION_OPEN_FORECAST_SCREEN))
 
         view.findViewById<Button>(R.id.favourite_cities_button)
-            .setOnClickListener { retrieveFavouriteIds() }
+            .setOnClickListener { startFavouritesScreen() }
     }
 
-    private fun startForecastScreen(citySerializable: Serializable) {
-        Intent(activity, ForecastActivity::class.java)
-            .putExtra(EXTRA_CITY, citySerializable)
-            .also { startActivity(it) }
-    }
-
-    private fun addCitiesToList(recyclerView: RecyclerView){
+    private fun drawCitiesList(recyclerView: RecyclerView) {
         recyclerView
             .also { it.layoutManager = LinearLayoutManager(context) }
             .also { it.adapter = CitiesRecyclerViewAdapter(this, viewModel.searchResults) }
     }
 
-    private fun retrieveFavouriteIds(){
-        viewModel
-            .also { it.onFavouritesButtonClicked(context!!) }
-            .let { it.idsResult }
-            .observe(this, Observer { if (it!!.isNotEmpty()) startFavouritesScreen(it)
-            println(it)})
-    }
-
-    private fun startFavouritesScreen(ids: List<Long>){
+    private fun startFavouritesScreen() {
         Intent(context, FavouriteCities::class.java)
-            .also { it.putExtra(EXTRA_FAVOURITE_IDS, ids as Serializable) }
             .also { startActivity(it) }
     }
 
-    override fun onDestroy(){
+    override fun onDestroy() {
         super.onDestroy()
-        activity!!.unregisterReceiver(resultsReceiver)
         disposables.dispose()
     }
 }

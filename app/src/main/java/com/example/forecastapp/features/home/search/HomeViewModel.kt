@@ -17,15 +17,10 @@ import java.io.Serializable
 
 class HomeViewModel(
     private val disposables: CompositeDisposable = CompositeDisposable(),
-    val showCityForecast: PublishSubject<Serializable> = PublishSubject.create(),
     val searchProgress: MutableLiveData<Boolean> = false.toMutableLiveData(),
     val searchResults: MutableLiveData<List<City>> = ArrayList<City>().toMutableLiveData(),
-    val searchCityByName: SearchCityByNameUseCase = SearchCityByNameUseCase(searchProgress, searchResults),
-    val idsResult:MutableLiveData<List<Long>> = MutableLiveData(),
-    val idsRetrieving:MutableLiveData<Boolean> =false.toMutableLiveData(),
-    val importFavouriteIds: ImportFavouriteIdsUseCase =ImportFavouriteIdsUseCase(idsRetrieving,idsResult)
-) : ViewModel() {
-
+    val searchCityByName: SearchCityByNameUseCase = SearchCityByNameUseCase(searchProgress, searchResults)
+    ) : ViewModel() {
 
     fun onSearchButtonClicked(cityName: String?) {
         Observable
@@ -33,17 +28,6 @@ class HomeViewModel(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe()
-            .also { disposables.addAll() }
-    }
-
-    private val emptyFavourites="no fovourite cities to show"
-
-    fun onFavouritesButtonClicked(context: Context){
-        Single.create<Unit> { importFavouriteIds() }
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnError { Toast.makeText(context,emptyFavourites,Toast.LENGTH_SHORT).show() }
-            .subscribe({},Throwable::printStackTrace)
             .also { disposables.addAll() }
     }
 
