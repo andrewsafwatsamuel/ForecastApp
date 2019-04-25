@@ -2,18 +2,12 @@ package com.example.forecastapp.features.home.search
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
-import android.content.Context
-import android.widget.Toast
 import com.example.domain.*
 import com.example.entity.City
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import io.reactivex.subjects.PublishSubject
-import java.io.Serializable
-
 
 class HomeViewModel(
     private val disposables: CompositeDisposable = CompositeDisposable(),

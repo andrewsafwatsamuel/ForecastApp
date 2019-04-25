@@ -12,11 +12,11 @@
             android:roundIcon="@mipmap/ic_launcher_round"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".features.forecast.ForecastActivity"/>
+        <activity android:name=".features.forecast.ForecastActivity"
+                  android:launchMode="singleTask"/>
         <activity android:name="com.example.forecastapp.features.home.search.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
-
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>

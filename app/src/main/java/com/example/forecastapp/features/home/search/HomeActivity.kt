@@ -1,17 +1,11 @@
 package com.example.forecastapp.features.home.search
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.ViewModelProviders
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v4.app.FragmentTransaction
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -20,20 +14,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import com.example.forecastapp.R
 import com.example.forecastapp.core.ContentViewId
-import com.example.forecastapp.features.forecast.ForecastActivity
 import com.example.forecastapp.features.home.favourite_cities.FavouriteCities
-import com.example.forecastapp.subFeatures.cities_list.ACTION_OPEN_FORECAST_SCREEN
 import com.example.forecastapp.subFeatures.cities_list.CitiesFragment
 import com.example.forecastapp.subFeatures.cities_list.CitiesRecyclerViewAdapter
-import com.example.forecastapp.subFeatures.cities_list.EXTRA_CITY
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.android.synthetic.main.fragment_home.*
-import java.io.Serializable
-import java.util.concurrent.TimeUnit
 
 val citiesFragment = CitiesFragment()
-const val EXTRA_FAVOURITE_IDS = "com.example.forecastapp.features.home.search_EXTRA_FAVOURITE_IDS"
 
 @ContentViewId(R.layout.activity_home)
 class HomeActivity : AppCompatActivity() {
