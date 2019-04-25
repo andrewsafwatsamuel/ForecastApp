@@ -65,4 +65,5 @@ class ForecastActivity : AppCompatActivity(), ForecastView {
         fovurites_switch_button.setOnClickListener { presenter.onFavouriteButtonClick() }
         presenter.initializeCity(intent.getSerializableExtra(EXTRA_CITY) as City)
     }
+
 }

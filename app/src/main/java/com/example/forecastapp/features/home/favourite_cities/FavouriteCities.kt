@@ -19,13 +19,13 @@ class FavouriteCities : AppCompatActivity() {
         ViewModelProviders.of(this)[FavouriteCitiesViewModel::class.java]
     }
 
-    private val citiesFragment by lazy {CitiesFragment()}
+    private val citiesFragment by lazy { CitiesFragment() }
 
-   override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       supportFragmentManager
-           .beginTransaction().add(R.id.cities_frame_layout, citiesFragment)
-           .commit()
+        supportFragmentManager
+            .beginTransaction().add(R.id.cities_frame_layout, citiesFragment)
+            .commit()
     }
 
     override fun onPostResume() {
@@ -38,11 +38,13 @@ class FavouriteCities : AppCompatActivity() {
             .also { it.retrieveFavouriteIds() }
             .also { observeIds(it) }
             .also { drawCitiesList() }
-     }
+    }
 
     private fun observeIds(viewModel: FavouriteCitiesViewModel) {
-        viewModel.idsResult.observe(this, Observer { viewModel.importFavouriteCities(it!!)
-        println(it)})
+        viewModel.idsResult.observe(this, Observer {
+            viewModel.importFavouriteCities(it!!)
+           /* println(it)*/
+        })
     }
 
     private fun drawCitiesList() {
@@ -58,6 +60,6 @@ class FavouriteCities : AppCompatActivity() {
         recyclerView
             .also { it.layoutManager = LinearLayoutManager(this) }
             .also { it.adapter = CitiesRecyclerViewAdapter(this, viewModel.citiesResult) }
-        viewModel.citiesResult.observe(this, Observer { println(it) })
+       /* viewModel.citiesResult.observe(this, Observer { println(it) })*/
     }
 }

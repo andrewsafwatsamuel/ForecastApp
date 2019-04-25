@@ -27,7 +27,6 @@ class CitiesViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(city: City) {
         cityTextView.text = city.name ?: ""
         forecastButton.setOnClickListener {
-            Toast.makeText(view.context, city.name ?: "", Toast.LENGTH_SHORT).show()
             Intent(ACTION_OPEN_FORECAST_SCREEN)
                 .putExtra(EXTRA_CITY, city as Serializable)
                 .also { view.context.sendBroadcast(it) }
