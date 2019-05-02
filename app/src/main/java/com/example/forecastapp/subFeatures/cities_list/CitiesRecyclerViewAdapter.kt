@@ -49,15 +49,14 @@ class CitiesRecyclerViewAdapter(
 
 
     override fun onCreateViewHolder(p0: ViewGroup, p1: Int): CitiesViewHolder {
-
-        val view = LayoutInflater.from(p0.context).inflate(
+        return LayoutInflater.from(p0.context).inflate(
             R.layout.search_item, p0, false
-        )
-        return CitiesViewHolder(view)
+        ).let { CitiesViewHolder(it) }
     }
 
     override fun getItemCount() = citiesLiveData.value!!.size
 
     override fun onBindViewHolder(viewHolder: CitiesViewHolder, position: Int) =
         viewHolder.bind(citiesLiveData.value!![position])
+
 }

@@ -9,4 +9,5 @@
     <string name="temperature_now">now</string>
     <string name="humedity">humedity</string>
     <string name="pressure">Pressure</string>
+    <string name="empty_favourites">No cities to show</string>
 </resources>

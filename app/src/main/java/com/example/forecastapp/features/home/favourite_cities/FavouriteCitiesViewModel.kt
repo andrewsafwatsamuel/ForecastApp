@@ -16,20 +16,21 @@ class FavouriteCitiesViewModel(
     private val disposables: CompositeDisposable = CompositeDisposable(),
     val isRetrieving: MutableLiveData<Boolean> = false.toMutableLiveData(),
     val citiesResult: MutableLiveData<List<City>> = ArrayList<City>().toMutableLiveData(),
-   private val importFavouriteCitiesByIdUseCase: ImportFavouriteCitiesByIdUseCase
+    private val importFavouriteCitiesByIdUseCase: ImportFavouriteCitiesByIdUseCase
     = ImportFavouriteCitiesByIdUseCase(isRetrieving, citiesResult),
     val idsResult:IdsLiveData = ArrayList<Long>().toMutableLiveData(),
-    val idsRetrieving:MutableLiveData<Boolean> =false.toMutableLiveData(),
-   private val importFavouriteIds: ImportFavouriteIdsUseCase
+    private val idsRetrieving:MutableLiveData<Boolean> =false.toMutableLiveData(),
+    val emptyIds: MutableLiveData<Boolean> = MutableLiveData(),
+    private val importFavouriteIds: ImportFavouriteIdsUseCase
     = ImportFavouriteIdsUseCase(idsRetrieving,idsResult)
-
 ) : ViewModel() {
 
     fun retrieveFavouriteIds(){
         Single.fromCallable { importFavouriteIds() }
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({},Throwable::printStackTrace)
+            .doOnError { emptyIds.postValue(true) }
+            .subscribe({emptyIds.postValue(false)},Throwable::printStackTrace)
             .also { disposables.addAll() }
     }
 
