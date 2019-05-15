@@ -9,7 +9,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.example.forecastapp.R
 import com.example.forecastapp.core.ContentViewId
-import com.example.forecastapp.subFeatures.cities_list.CitiesFragment
+import com.example.forecastapp.subFeatures.cities_list.CitiesFragmentHolder
 import com.example.forecastapp.subFeatures.cities_list.CitiesRecyclerViewAdapter
 import kotlinx.android.synthetic.main.activity_favourite_cities.*
 
@@ -20,15 +20,14 @@ class FavouriteCities : AppCompatActivity() {
         ViewModelProviders.of(this)[FavouriteCitiesViewModel::class.java]
     }
 
-    private val citiesFragment by lazy { CitiesFragment() }
+    private val citiesHolder by lazy { ViewModelProviders.of(this)[CitiesFragmentHolder::class.java] }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        supportFragmentManager
-            .beginTransaction().add(R.id.cities_frame_layout, citiesFragment)
-            .commit()
 
-        citiesFragment.publicRecyclerViewLiveData.observe(this, Observer {
+        citiesHolder(R.id.cities_frame_layout,this)
+
+        citiesHolder.citiesRecyclerView.observe(this, Observer {
             drawRecyclerView(it!!)
             setEmptyState(it)
         })
