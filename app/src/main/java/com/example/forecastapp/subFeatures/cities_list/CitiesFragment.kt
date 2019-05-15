@@ -2,12 +2,14 @@ package com.example.forecastapp.subFeatures.cities_list
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.ViewModel
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentActivity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +22,18 @@ import io.reactivex.subjects.PublishSubject
 import java.io.Serializable
 import java.util.concurrent.TimeUnit
 
+class CitiesFragmentHolder(
+    private val fragment: CitiesFragment = CitiesFragment(),
+    val citiesRecyclerView: LiveData<RecyclerView> = fragment.publicRecyclerViewLiveData
+) : ViewModel() {
+    operator fun invoke(id: Int, activity: FragmentActivity) {
+        activity.supportFragmentManager
+            .beginTransaction()
+            .add(id, fragment)
+            .commit()
+    }
+}
+
 class CitiesFragment : Fragment() {
 
     private val recyclerViewLiveData = MutableLiveData<RecyclerView>()
@@ -27,13 +41,13 @@ class CitiesFragment : Fragment() {
 
     private val showCityForecast: PublishSubject<Serializable> = PublishSubject.create()
 
+    private val disposables = CompositeDisposable()
+
     private val resultsReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             showCityForecast.onNext(intent!!.getSerializableExtra(EXTRA_CITY))
         }
     }
-
-    private val disposables = CompositeDisposable()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -43,8 +57,11 @@ class CitiesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         recyclerViewLiveData.value = view.findViewById(R.id.cities_list)
+
         activity!!.registerReceiver(resultsReceiver, IntentFilter(ACTION_OPEN_FORECAST_SCREEN))
+
         showCityForecast.debounce(500, TimeUnit.MILLISECONDS)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe { startForecastScreen(it) }
@@ -63,5 +80,3 @@ class CitiesFragment : Fragment() {
         disposables.dispose()
     }
 }
-
-
